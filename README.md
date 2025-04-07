@@ -144,4 +144,4 @@ If you encounter connection issues:
 
 - Python 3.7 or higher
 - `requests` library
-- `websockets` library 
+- `websockets` library "# polaris-terminal" 
