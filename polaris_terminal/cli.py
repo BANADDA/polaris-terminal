@@ -24,7 +24,7 @@ def load_config():
     config_file = os.path.expanduser("~/.polaris/config.json")
     config = {
         "server_url": os.environ.get("POLARIS_SERVER_URL", DEFAULT_SERVER_URL),
-        "miner_id": os.environ.get("POLARIS_MINER_ID", "WWmHlBdA9KmiNHt3Hz7x")
+        "miner_id": os.environ.get("POLARIS_MINER_ID", "EXAMPLE-MINER-ID-REPLACE-THIS")
     }
     
     if os.path.exists(config_file):
@@ -36,9 +36,9 @@ def load_config():
             print(f"Warning: Could not load config file: {e}")
     
     # Ensure miner_id is not None
-    if config["miner_id"] is None:
-        config["miner_id"] = "WWmHlBdA9KmiNHt3Hz7x"
-        print(f"Warning: No miner_id found, using default: {config['miner_id']}")
+    if config["miner_id"] is None or config["miner_id"] == "EXAMPLE-MINER-ID-REPLACE-THIS":
+        print(f"Warning: No valid miner_id configured. Please set your miner ID using:")
+        print(f"  polaris config --miner-id YOUR_MINER_ID")
     
     return config
 
@@ -83,7 +83,12 @@ def get_terminal_connection(container_name, server_url=None, miner_id=None):
     # Use environment variable or default if miner_id wasn't found
     if not miner_id:
         miner_id = get_default_miner_id()
-        print(f"Using default miner ID: {miner_id}")
+        if miner_id == "EXAMPLE-MINER-ID-REPLACE-THIS":
+            print("Error: No valid miner ID configured. Please set your miner ID using:")
+            print("  polaris config --miner-id YOUR_MINER_ID")
+            sys.exit(1)
+        else:
+            print(f"Using configured miner ID: {miner_id}")
     
     # Make sure container name has the correct format
     if not container_name.startswith("polaris-pod-") and re.match(r'^[0-9]+.*', container_name):
@@ -209,7 +214,7 @@ def get_pod_details(pod_name_or_id, server_url=None):
         
         # If we have a miner ID, try to look up containers
         miner_id = get_default_miner_id()
-        if miner_id:
+        if miner_id and miner_id != "EXAMPLE-MINER-ID-REPLACE-THIS":
             # Check if we need to normalize the container name
             if not container_name.startswith("polaris-pod-"):
                 # Only add prefix if it looks like a timestamp/ID
@@ -234,6 +239,9 @@ def get_pod_details(pod_name_or_id, server_url=None):
                     if container_name_from_api == container_name:
                         print(f"Found matching container: {container_name_from_api}")
                         return container
+        else:
+            print("No valid miner ID configured. Please set your miner ID using:")
+            print("  polaris config --miner-id YOUR_MINER_ID")
         
         # If we didn't find anything, let the user know
         print(f"Could not find container or pod matching: {pod_name_or_id}")
@@ -265,10 +273,17 @@ def list_containers(server_url=None, specified_container=None):
             else:
                 print(f"Could not find container {specified_container}")
                 return
-        
-        # If no miner_id was found or no container was specified, use the default or environment value
-        if not miner_id:
+        else:
+            # If no container specified, check if a valid miner ID is configured
             miner_id = get_default_miner_id()
+            if miner_id == "EXAMPLE-MINER-ID-REPLACE-THIS":
+                print("Error: No specific container or valid miner ID provided.")
+                print("To list containers, either:")
+                print("  1. Specify a container: polaris list --container YOUR_CONTAINER_NAME")
+                print("  2. Configure your miner ID: polaris config --miner-id YOUR_MINER_ID")
+                print("\nFor security and privacy reasons, we require either a specific container")
+                print("or your own miner ID to list containers.")
+                return
         
         url = f"{server_url}/api/v1/containers/{miner_id}"
         
@@ -378,7 +393,18 @@ def show_container_info(container_name, server_url=None):
 
 def main():
     """Main entry point for the Polaris CLI"""
-    parser = argparse.ArgumentParser(description="Polaris Terminal Connection Tool")
+    parser = argparse.ArgumentParser(
+        description="Polaris Terminal Connection Tool",
+        epilog="""
+Security Note: For privacy reasons, you must configure your miner ID:
+  polaris config --miner-id YOUR_MINER_ID
+
+Example usage:
+  polaris connect pod-1
+  polaris info polaris-pod-1743999981-pod-1
+  polaris config --show
+"""
+    )
     
     # Subcommands
     subparsers = parser.add_subparsers(dest="command", help="Commands")
@@ -402,7 +428,7 @@ def main():
     # Config command
     config_parser = subparsers.add_parser("config", help="Configure default settings")
     config_parser.add_argument("--server-url", help="Set the default server URL")
-    config_parser.add_argument("--miner-id", help="Set the default miner ID")
+    config_parser.add_argument("--miner-id", help="Set your miner ID (required for security reasons)")
     config_parser.add_argument("--show", action="store_true", help="Show current configuration")
     
     # Parse arguments

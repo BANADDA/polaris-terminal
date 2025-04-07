@@ -16,5 +16,14 @@ def create_config():
         import json
         config = {
             "server_url": "https://polaris-test-server.onrender.com",
-            "miner_id": ""
-        } 
+            "miner_id": "EXAMPLE-MINER-ID-REPLACE-THIS"
+        }
+        
+        with open(config_file, "w") as f:
+            json.dump(config, f, indent=2)
+        
+        print(f"Created default configuration file: {config_file}")
+        print("\nIMPORTANT: For security reasons, you must configure your miner ID:")
+        print("  polaris config --miner-id YOUR_MINER_ID")
+    else:
+        print(f"Configuration file already exists: {config_file}") 

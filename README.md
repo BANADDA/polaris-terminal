@@ -8,7 +8,7 @@ A command-line tool for connecting to Polaris containers via terminal.
 
 ```bash
 # Clone the repository
-git clone https://github.com/BANADDA/polaris-terminal.git
+git clone https://github.com/polaris/polaris-terminal.git
 cd polaris-terminal
 
 # Install the package
@@ -28,13 +28,27 @@ pip install polaris-terminal
 python install_polaris_terminal.py
 ```
 
+## Initial Setup
+
+After installation, you must configure your miner ID:
+
+```bash
+# Set your miner ID (required for security reasons)
+polaris config --miner-id YOUR_MINER_ID
+```
+
 ## Usage
 
 ### List Available Containers
 
-List all containers for the default miner:
+To list containers, you must either specify a container or configure your miner ID:
+
 ```bash
+# List all containers for your miner ID (after configuring)
 polaris list
+
+# List containers for a specific container (safer, no miner ID required)
+polaris list --container polaris-pod-1743999981-pod-1
 ```
 
 ### Show Container Details
@@ -77,18 +91,18 @@ polaris config --show
 
 Set default server URL:
 ```bash
-polaris config --server-url http://148.76.188.132:8001
+polaris config --server-url https://polaris-test-server.onrender.com
 ```
 
-Set default miner ID:
+Set your miner ID (required for security):
 ```bash
-polaris config --miner-id WWmHlBdA9KmiNHt3Hz7x
+polaris config --miner-id YOUR_MINER_ID
 ```
 
 ### Specify Server URL for a Single Command
 
 ```bash
-polaris connect polaris-pod-1743999981-pod-1 --server-url http://148.76.188.132:8001
+polaris connect polaris-pod-1743999981-pod-1 --server-url https://polaris-test-server.onrender.com
 ```
 
 ### Show Verbose Output
@@ -100,6 +114,7 @@ polaris connect polaris-pod-1743999981-pod-1 --verbose
 
 ## Features
 
+- **Privacy-Focused**: Only access your own containers by using your miner ID
 - **Smart Container Name Handling**: Works with full container names, pod IDs, or partial names
 - **Automatic Miner ID Detection**: Automatically detects the correct miner ID for each container
 - **WebSocket Terminal**: Connect to container terminals via WebSocket
@@ -118,6 +133,13 @@ The tool intelligently handles different formats for container identification:
 
 All these formats will be automatically detected and handled correctly.
 
+## Security
+
+For security and privacy reasons:
+- You must configure your own miner ID to list all containers
+- When connecting to a specific container, the tool will automatically detect the correct miner ID
+- No hardcoded miner IDs are included in the package
+
 ## Configuration
 
 The tool stores its configuration in `~/.polaris/config.json`. You can edit this file directly or use the `polaris config` command to update settings.
@@ -126,7 +148,7 @@ Default configuration:
 ```json
 {
   "server_url": "https://polaris-test-server.onrender.com",
-  "miner_id": "WWmHlBdA9KmiNHt3Hz7x"
+  "miner_id": "EXAMPLE-MINER-ID-REPLACE-THIS"
 }
 ```
 
@@ -135,7 +157,7 @@ Default configuration:
 If you encounter connection issues:
 
 1. Check your server URL with `polaris config --show`
-2. Ensure your container exists with `polaris list`
+2. Ensure you've set your miner ID with `polaris config --miner-id YOUR_MINER_ID`
 3. Try using the pod ID directly with `polaris connect pod-1`
 4. Use the `--verbose` flag for detailed diagnostics
 5. Try accessing the web terminal directly in your browser at `https://polaris-test-server.onrender.com/api/v1/containers/{container_name}/terminal`
@@ -144,4 +166,4 @@ If you encounter connection issues:
 
 - Python 3.7 or higher
 - `requests` library
-- `websockets` library "# polaris-terminal" 
+- `websockets` library
