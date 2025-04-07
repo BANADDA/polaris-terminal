@@ -125,8 +125,8 @@ The tool stores its configuration in `~/.polaris/config.json`. You can edit this
 Default configuration:
 ```json
 {
-  "server_url": "http://localhost:8001",
-  "miner_id": "WWm**************7x"
+  "server_url": "https://polaris-test-server.onrender.com",
+  "miner_id": "WWmHlBdA9KmiNHt3Hz7x"
 }
 ```
 
@@ -138,7 +138,7 @@ If you encounter connection issues:
 2. Ensure your container exists with `polaris list`
 3. Try using the pod ID directly with `polaris connect pod-1`
 4. Use the `--verbose` flag for detailed diagnostics
-5. Try accessing the web terminal directly in your browser at `http://localhost:8001/api/v1/containers/{container_name}/terminal`
+5. Try accessing the web terminal directly in your browser at `https://polaris-test-server.onrender.com/api/v1/containers/{container_name}/terminal`
 
 ## Requirements
 

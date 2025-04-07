@@ -17,13 +17,13 @@ import requests
 from .terminal import SCRIPT_PATH
 
 # Default server URL - can be overridden with environment variable
-DEFAULT_SERVER_URL = "http://localhost:8001"
+DEFAULT_SERVER_URL = "https://polaris-test-server.onrender.com"
 
 def load_config():
     """Load configuration from config file"""
     config_file = os.path.expanduser("~/.polaris/config.json")
     config = {
-        "server_url": os.environ.get("POLARIS_SERVER_URL", "http://localhost:8001"),
+        "server_url": os.environ.get("POLARIS_SERVER_URL", DEFAULT_SERVER_URL),
         "miner_id": os.environ.get("POLARIS_MINER_ID", "WWmHlBdA9KmiNHt3Hz7x")
     }
     

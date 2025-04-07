@@ -63,8 +63,8 @@ Examples:
     )
     parser.add_argument(
         "--server-url", 
-        default="http://localhost:8001",
-        help="URL of the Polaris server (default: http://localhost:8001)"
+        default="https://polaris-test-server.onrender.com",
+        help="URL of the Polaris server (default: https://polaris-test-server.onrender.com)"
     )
     parser.add_argument(
         "--verbose", "-v",
